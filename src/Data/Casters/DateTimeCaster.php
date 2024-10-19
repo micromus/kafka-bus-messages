@@ -23,7 +23,7 @@ class DateTimeCaster extends NullableCaster
 
     protected function rollbackNotNull(mixed $value, string $attributeKey): string|int|array|null
     {
-        if ($value instanceof DateTimeInterface) {
+        if ($value instanceof DateTime || $value instanceof DateTimeImmutable) {
             return $value
                 ->setTimezone(new DateTimeZone('UTC'))
                 ->format($this->format);
