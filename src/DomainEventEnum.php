@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBusDomain\Messages\Domain;
+namespace Micromus\KafkaBusMessages;
 
 enum DomainEventEnum: string
 {

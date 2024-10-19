@@ -1,8 +1,9 @@
 <?php
 
-namespace Micromus\KafkaBusDomain\Messages\Domain;
+namespace Micromus\KafkaBusMessages\Factories;
 
-use Micromus\KafkaBusDomain\Messages\MessageFactory;
+use Micromus\KafkaBusMessages\DomainEventEnum;
+use Micromus\KafkaBusMessages\DomainMessage;
 
 /**
  * @template T of DomainMessage
@@ -12,7 +13,8 @@ use Micromus\KafkaBusDomain\Messages\MessageFactory;
 abstract class DomainMessageFactory extends MessageFactory
 {
     /**
-     * @return T
+     * @param array $payload
+     * @return DomainMessage
      */
     protected function make(array $payload): DomainMessage
     {
@@ -27,7 +29,10 @@ abstract class DomainMessageFactory extends MessageFactory
     }
 
     /**
-     * @return T
+     * @param DomainEventEnum $event
+     * @param array $attributes
+     * @param array $dirty
+     * @return DomainMessage
      */
     abstract protected function makeDomainMessage(DomainEventEnum $event, array $attributes, array $dirty): DomainMessage;
 }

@@ -1,20 +1,21 @@
 <?php
 
-namespace Micromus\KafkaBusDomain\Messages\Domain;
+namespace Micromus\KafkaBusMessages;
 
 use Micromus\KafkaBus\Interfaces\Messages\HasKey;
 use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 
 /**
- * @template T of Attributes
+ * @template T of AttributesInterface
  */
 abstract readonly class DomainMessage implements HasKey, MessageInterface
 {
     /**
-     * @param Attributes $attributes
+     * @param T $attributes
      */
     public function __construct(
-        public Attributes $attributes,
+        public AttributesInterface $attributes,
         public DomainEventEnum $event,
         public array $dirty = []
     ) {
@@ -24,7 +25,7 @@ abstract readonly class DomainMessage implements HasKey, MessageInterface
     {
         return json_encode([
             'event' => $this->event->value,
-            'attributes' => $this->attributes->toArray(),
+            'attributes' => $this->attributes->jsonSerialize(),
             'dirty' => $this->dirty,
         ]);
     }

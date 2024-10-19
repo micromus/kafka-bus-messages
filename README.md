@@ -1,9 +1,9 @@
-# Kafka Bus Domain for PHP
+# Kafka Bus Messages for PHP
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/micromus/kafka-bus-domain.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus-domain)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus-domain/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/micromus/kafka-bus-domain/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus-domain/php-code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/micromus/kafka-bus-domain/actions?query=workflow%3A"PHP+Code+Style"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/micromus/kafka-bus-domain.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus-domain)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/micromus/kafka-bus-messages.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus-messages)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus-messages/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/micromus/kafka-bus-messages/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus-messages/php-code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/micromus/kafka-bus-messages/actions?query=workflow%3A"PHP+Code+Style"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/micromus/kafka-bus-messages.svg?style=flat-square)](https://packagist.org/packages/micromus/kafka-bus-messages)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
@@ -12,7 +12,7 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 You can install the package via composer:
 
 ```bash
-composer require micromus/kafka-bus-domain
+composer require micromus/kafka-bus-messages
 ```
 
 ## Usage

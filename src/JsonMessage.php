@@ -1,19 +1,14 @@
 <?php
 
-namespace Micromus\KafkaBusDomain;
+namespace Micromus\KafkaBusMessages;
 
 use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBusMessages\Data\Payload;
 
-class JsonMessage implements MessageInterface
+class JsonMessage extends Payload implements MessageInterface
 {
-    public function __construct(
-        protected array $attributes
-    ) {
-    }
-
-
     public function toPayload(): string
     {
-        return json_encode($this->attributes);
+        return json_encode($this->jsonSerialize());
     }
 }

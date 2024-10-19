@@ -1,5 +1,8 @@
 <?php
 
-namespace Micromus\KafkaBusDomain\Tests;
+namespace Micromus\KafkaBusMessages\Tests;
 
-class TestCase extends \PHPUnit\Framework\TestCase {}
+class TestCase extends \PHPUnit\Framework\TestCase
+{
+
+}

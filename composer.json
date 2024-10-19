@@ -1,11 +1,11 @@
 {
-    "name": "micromus/kafka-bus-domain",
-    "description": "This is my package kafka-bus-domain",
+    "name": "micromus/kafka-bus-messages",
+    "description": "This is my package kafka-bus-messages",
     "keywords": [
         "Micromus",
         "kafka-bus"
     ],
-    "homepage": "https://github.com/micromus/kafka-bus-domain",
+    "homepage": "https://github.com/micromus/kafka-bus-messages",
     "license": "MIT",
     "authors": [
         {
@@ -16,9 +16,12 @@
     ],
     "require": {
         "php": "^8.2",
-        "micromus/kafka-bus": "^0.3.0"
+        "ext-rdkafka": "*",
+        "micromus/kafka-bus": "^0.3.0",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
+        "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.64",
         "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-arch": "^2.7",
@@ -29,12 +32,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Micromus\\KafkaBusDomain\\": "src/"
+            "Micromus\\KafkaBusMessages\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Micromus\\KafkaBusDomain\\Tests\\": "tests/"
+            "Micromus\\KafkaBusMessages\\Tests\\": "tests/",
+            "Micromus\\KafkaBusMessages\\Workbench\\": "workbench/"
         }
     },
     "scripts": {

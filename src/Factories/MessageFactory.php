@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBusDomain\Messages;
+namespace Micromus\KafkaBusMessages\Factories;
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
