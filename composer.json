@@ -17,7 +17,7 @@
     "require": {
         "php": "^8.2",
         "ext-rdkafka": "*",
-        "micromus/kafka-bus": "^0.3.0",
+        "micromus/kafka-bus": "^0.5.2",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
