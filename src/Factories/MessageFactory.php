@@ -2,8 +2,8 @@
 
 namespace Micromus\KafkaBusMessages\Factories;
 
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 
 /**
  * @template T
@@ -13,9 +13,9 @@ abstract class MessageFactory implements MessageFactoryInterface
     /**
      * @return T
      */
-    public function fromKafka(ConsumerMessage $message): mixed
+    public function fromKafka(ConsumerMessageInterface $message): mixed
     {
-        return $this->make(json_decode($message->payload, true));
+        return $this->make(json_decode($message->payload(), true));
     }
 
     /**

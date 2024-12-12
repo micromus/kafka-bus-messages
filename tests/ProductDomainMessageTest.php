@@ -33,7 +33,7 @@ it('create domain message from kafka', function () {
     $message->payload = json_encode($raw);
 
     $productDomainMessage = (new ProductDomainMessageFactory())
-        ->fromKafka(new ConsumerMessage($message->payload, [], new ConsumerMeta($message)));
+        ->fromKafka(new ConsumerMessage($message));
 
     assertEquals(DomainEventEnum::Create, $productDomainMessage->event);
     assertEquals(['test'], $productDomainMessage->dirty);

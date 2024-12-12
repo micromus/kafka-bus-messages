@@ -2,10 +2,10 @@
 
 namespace Micromus\KafkaBusMessages;
 
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBusMessages\Data\Payload;
 
-class JsonMessage extends Payload implements MessageInterface
+class JsonMessage extends Payload implements ProducerMessageInterface
 {
     public function toPayload(): string
     {

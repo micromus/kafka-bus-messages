@@ -2,16 +2,13 @@
 
 namespace Micromus\KafkaBusMessages\Testing;
 
-use Faker\Factory;
-use Faker\Generator;
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMeta;
-use Micromus\KafkaBus\Interfaces\Messages\MessageFactoryInterface;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use RdKafka\Message;
 
 /**
- * @template T of MessageInterface
+ * @template T of ProducerMessageInterface
  */
 abstract class MessageTestFactory extends TestFactory
 {
@@ -35,17 +32,13 @@ abstract class MessageTestFactory extends TestFactory
     {
         $message = $this->makeKafkaMessage($extra);
 
-        return new ConsumerMessage(
-            payload: $message->payload,
-            headers: $message->headers,
-            meta: new ConsumerMeta($message)
-        );
+        return new ConsumerMessage($message);
     }
 
     /**
      * @return T
      */
-    public function makeMessage(array $extra = []): MessageInterface
+    public function makeMessage(array $extra = []): ProducerMessageInterface
     {
         return $this->makeMessageFactory()
             ->fromKafka($this->makeConsumerMessage($extra));

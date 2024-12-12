@@ -2,14 +2,14 @@
 
 namespace Micromus\KafkaBusMessages;
 
-use Micromus\KafkaBus\Interfaces\Messages\HasKey;
-use Micromus\KafkaBus\Interfaces\Messages\MessageInterface;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
+use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
 use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 
 /**
  * @template T of AttributesInterface
  */
-abstract readonly class DomainMessage implements HasKey, MessageInterface
+abstract readonly class DomainMessage implements HasKey, ProducerMessageInterface
 {
     /**
      * @param T $attributes
