@@ -1,15 +1,19 @@
 {
     "name": "micromus/kafka-bus-messages",
-    "description": "This is my package kafka-bus-messages",
+    "description": "Messages Builder for Kafka Bus",
     "keywords": [
         "Micromus",
-        "kafka-bus"
+        "kafka-bus",
+        "kafka",
+        "Apache Kafka",
+        "message",
+        "dto"
     ],
     "homepage": "https://github.com/micromus/kafka-bus-messages",
     "license": "MIT",
     "authors": [
         {
-            "name": "Micromus",
+            "name": "Kirill Popkov",
             "email": "kirill.popkov.work@gmail.com",
             "role": "Developer"
         }
@@ -17,7 +21,7 @@
     "require": {
         "php": "^8.2",
         "ext-rdkafka": "*",
-        "micromus/kafka-bus": "^0.6.1",
+        "micromus/kafka-bus": "^1.0.0-RC1",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
@@ -43,6 +47,7 @@
     },
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
+        "analyse:baseline": "vendor/bin/phpstan analyse --generate-baseline",
         "format": "vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage"

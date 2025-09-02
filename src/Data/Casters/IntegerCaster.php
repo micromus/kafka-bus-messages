@@ -8,11 +8,15 @@ class IntegerCaster implements CasterInterface
 {
     public function cast(mixed $value, string $attributeKey): int
     {
-        return intval($value);
+        \assert(is_numeric($value));
+
+        return \intval($value);
     }
 
     public function rollback(mixed $value, string $attributeKey): int
     {
-        return intval($value);
+        \assert(is_numeric($value));
+
+        return \intval($value);
     }
 }

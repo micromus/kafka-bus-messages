@@ -2,15 +2,10 @@
 
 namespace Micromus\KafkaBusMessages\Workbench\Data;
 
-use Micromus\KafkaBusMessages\Testing\PayloadTestFactory;
+use Micromus\KafkaBusMessages\Testing\TestFactory;
 
-/**
- * @extends PayloadTestFactory<CategoryPayload>
- */
-final class CategoryPayloadTestFactory extends PayloadTestFactory
+final class CategoryPayloadTestFactory extends TestFactory
 {
-    protected string $payloadClass = CategoryPayload::class;
-
     public function definition(): array
     {
         return [

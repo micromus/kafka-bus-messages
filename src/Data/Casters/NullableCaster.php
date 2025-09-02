@@ -13,7 +13,7 @@ class NullableCaster implements CasterInterface
 
     public function cast(mixed $value, string $attributeKey): mixed
     {
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return null;
         }
 
@@ -23,7 +23,7 @@ class NullableCaster implements CasterInterface
 
     public function rollback(mixed $value, string $attributeKey): mixed
     {
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return null;
         }
 

@@ -8,11 +8,15 @@ class FloatCaster implements CasterInterface
 {
     public function cast(mixed $value, string $attributeKey): float
     {
-        return floatval($value);
+        \assert(is_numeric($value));
+
+        return \floatval($value);
     }
 
     public function rollback(mixed $value, string $attributeKey): float
     {
-        return floatval($value);
+        \assert(is_numeric($value));
+
+        return \floatval($value);
     }
 }

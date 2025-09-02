@@ -6,20 +6,24 @@ use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 
 /**
- * @template T
+ * @template TMessage
  */
 abstract class MessageFactory implements MessageFactoryInterface
 {
     /**
-     * @return T
+     * @return TMessage
      */
     public function fromKafka(ConsumerMessageInterface $message): mixed
     {
-        return $this->make(json_decode($message->payload(), true));
+        /** @var array<string, mixed> $data */
+        $data = json_decode($message->payload(), true);
+
+        return $this->make($data);
     }
 
     /**
-     * @return T
+     * @param array<string, mixed> $payload
+     * @return TMessage
      */
     abstract protected function make(array $payload): mixed;
 }

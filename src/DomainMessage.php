@@ -13,6 +13,7 @@ abstract readonly class DomainMessage implements HasKey, ProducerMessageInterfac
 {
     /**
      * @param T $attributes
+     * @param string[] $dirty
      */
     public function __construct(
         public AttributesInterface $attributes,
@@ -23,7 +24,7 @@ abstract readonly class DomainMessage implements HasKey, ProducerMessageInterfac
 
     public function toPayload(): string
     {
-        return json_encode([
+        return (string) json_encode([
             'event' => $this->event->value,
             'attributes' => $this->attributes->jsonSerialize(),
             'dirty' => $this->dirty,

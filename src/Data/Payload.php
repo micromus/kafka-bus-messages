@@ -7,10 +7,13 @@ use JsonSerializable;
 use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
 
 /**
- *
+ * @implements ArrayAccess<string, mixed>
  */
 class Payload implements JsonSerializable, ArrayAccess
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $attributes = [];
 
     /**
@@ -18,7 +21,10 @@ class Payload implements JsonSerializable, ArrayAccess
      */
     private array $casters;
 
-    public function __construct($attributes = [])
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    public function __construct(array $attributes = [])
     {
         $this->casters = $this->definitionCasters();
 
@@ -35,10 +41,13 @@ class Payload implements JsonSerializable, ArrayAccess
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         $castedAttributes = array_map(function (mixed $value, string $attributeKey) {
-            return array_key_exists($attributeKey, $this->casters)
+            return \array_key_exists($attributeKey, $this->casters)
                 ? $this->casters[$attributeKey]->rollback($value, $attributeKey)
                 : $value;
         }, $this->attributes, array_keys($this->attributes));
@@ -58,7 +67,7 @@ class Payload implements JsonSerializable, ArrayAccess
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->attributes[$offset] = array_key_exists($offset, $this->casters)
+        $this->attributes[$offset] = \array_key_exists($offset, $this->casters) // @phpstan-ignore-line
             ? $this->casters[$offset]->cast($value, $offset)
             : $value;
     }
@@ -68,22 +77,22 @@ class Payload implements JsonSerializable, ArrayAccess
         unset($this->attributes[$offset]);
     }
 
-    public function __isset($key)
+    public function __isset(string $key): bool
     {
         return $this->offsetExists($key);
     }
 
-    public function __unset($key)
+    public function __unset(string $key): void
     {
         $this->offsetUnset($key);
     }
 
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->offsetGet($key);
     }
 
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value): void
     {
         $this->offsetSet($key, $value);
     }

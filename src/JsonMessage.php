@@ -9,6 +9,6 @@ class JsonMessage extends Payload implements ProducerMessageInterface
 {
     public function toPayload(): string
     {
-        return json_encode($this->jsonSerialize());
+        return (string) json_encode($this->jsonSerialize());
     }
 }
