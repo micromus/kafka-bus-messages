@@ -6,16 +6,23 @@ use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\DomainMessage;
 use RdKafka\Message;
 
-/**
- * @template T of DomainMessage
- * @extends MessageTestFactory<T>
- */
-abstract class DomainMessageTestFactory extends MessageTestFactory
+abstract class DomainMessageTestFactory extends TestFactory
 {
     protected DomainEventEnum $event = DomainEventEnum::Create;
 
+    /**
+     * @var string[]
+     */
     protected array $dirty = [];
 
+    /**
+     * @param array<string, mixed> $extra
+     * @return array{
+     *     event: string,
+     *     attributes: array<string, mixed>,
+     *     dirty: string[]
+     * }
+     */
     public function makeArray(array $extra = []): array
     {
         return [
@@ -25,27 +32,21 @@ abstract class DomainMessageTestFactory extends MessageTestFactory
         ];
     }
 
-    public function withEvent(DomainEventEnum $event): self
+    /**
+     * @param DomainEventEnum $event
+     * @return $this
+     */
+    public function withEvent(DomainEventEnum $event): static
     {
-        $this->event = $event;
-
-        return $this;
+        return $this->immutableSet('event', $event);
     }
 
-    public function withDirty(array $dirty): self
+    /**
+     * @param string[] $dirty
+     * @return $this
+     */
+    public function withDirty(array $dirty): static
     {
-        $this->dirty = $dirty;
-
-        return $this;
+        return $this->immutableSet('dirty', $dirty);
     }
-
-    protected function makeKafkaMessageFromPayload(array $payload = []): Message
-    {
-        $message = parent::makeKafkaMessageFromPayload($payload);
-        $message->key = $this->getKeyFromAttributes($payload['attributes']);
-
-        return $message;
-    }
-
-    abstract protected function getKeyFromAttributes(array $attributes): string;
 }

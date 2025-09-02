@@ -18,13 +18,19 @@ class DateTimeCaster implements CasterInterface
 
     public function cast(mixed $value, string $attributeKey): DateTimeInterface
     {
-        Assert::notNull($value, "Поле $attributeKey не должно быть пустым");
-
         if ($value instanceof DateTimeInterface) {
             return $value;
         }
 
-        return DateTimeImmutable::createFromFormat($this->format, $value);
+        \assert(\is_string($value));
+
+        $datetime =  DateTimeImmutable::createFromFormat($this->format, $value);
+
+        if ($datetime === false) {
+            throw new \LogicException('Cannot create datetime from format: ' . $this->format);
+        }
+
+        return $datetime;
     }
 
     public function rollback(mixed $value, string $attributeKey): mixed

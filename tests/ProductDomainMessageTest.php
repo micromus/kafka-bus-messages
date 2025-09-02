@@ -1,7 +1,6 @@
 <?php
 
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
-use Micromus\KafkaBus\Consumers\Messages\ConsumerMeta;
 use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\Workbench\ProductDomainMessageFactory;
 use RdKafka\Message;
@@ -30,7 +29,7 @@ it('create domain message from kafka', function () {
     ];
 
     $message = new Message();
-    $message->payload = json_encode($raw);
+    $message->payload = (string) json_encode($raw);
 
     $productDomainMessage = (new ProductDomainMessageFactory())
         ->fromKafka(new ConsumerMessage($message));

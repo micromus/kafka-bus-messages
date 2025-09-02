@@ -41,7 +41,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [kEERill](https://github.com/kEERill)
+- [Kirill Popkov](https://github.com/popkovkirill)
 - [All Contributors](../../contributors)
 
 ## License

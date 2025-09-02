@@ -12,9 +12,14 @@ class CollectionCaster implements CasterInterface
     ) {
     }
 
+    /**
+     * @param mixed $value
+     * @param string $attributeKey
+     * @return array<int, mixed>
+     */
     public function cast(mixed $value, string $attributeKey): array
     {
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return [];
         }
 
@@ -26,9 +31,14 @@ class CollectionCaster implements CasterInterface
         }, $value, array_keys($value));
     }
 
+    /**
+     * @param mixed $value
+     * @param string $attributeKey
+     * @return string|int|array<int, mixed>|null
+     */
     public function rollback(mixed $value, string $attributeKey): string|int|array|null
     {
-        if (is_null($value)) {
+        if (\is_null($value)) {
             return [];
         }
 

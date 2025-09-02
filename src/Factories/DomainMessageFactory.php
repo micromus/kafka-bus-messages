@@ -6,19 +6,23 @@ use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\DomainMessage;
 
 /**
- * @template T of DomainMessage
+ * @template TMessage of DomainMessage
  *
- * @extends MessageFactory<T>
+ * @extends MessageFactory<TMessage>
  */
 abstract class DomainMessageFactory extends MessageFactory
 {
     /**
-     * @param array $payload
-     * @return DomainMessage
+     * @param array{
+     *     event: string|null,
+     *     attributes: array<string, mixed>|null,
+     *     dirty: string[]|null
+     * } $payload
+     * @return TMessage
      */
     protected function make(array $payload): DomainMessage
     {
-        $event = DomainEventEnum::tryFrom($payload['event'])
+        $event = DomainEventEnum::tryFrom($payload['event'] ?? 'create')
             ?: DomainEventEnum::Create;
 
         $attributes = $payload['attributes'] ?? [];
@@ -30,9 +34,9 @@ abstract class DomainMessageFactory extends MessageFactory
 
     /**
      * @param DomainEventEnum $event
-     * @param array $attributes
-     * @param array $dirty
-     * @return DomainMessage
+     * @param array<string, mixed> $attributes
+     * @param string[] $dirty
+     * @return TMessage
      */
     abstract protected function makeDomainMessage(DomainEventEnum $event, array $attributes, array $dirty): DomainMessage;
 }
