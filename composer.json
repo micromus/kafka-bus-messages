@@ -1,9 +1,13 @@
 {
     "name": "micromus/kafka-bus-messages",
-    "description": "This is my package kafka-bus-messages",
+    "description": "Messages Builder for Kafka Bus",
     "keywords": [
         "Micromus",
-        "kafka-bus"
+        "kafka-bus",
+        "kafka",
+        "Apache Kafka",
+        "message",
+        "dto"
     ],
     "homepage": "https://github.com/micromus/kafka-bus-messages",
     "license": "MIT",
