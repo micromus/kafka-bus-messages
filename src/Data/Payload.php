@@ -4,6 +4,7 @@ namespace Micromus\KafkaBusMessages\Data;
 
 use ArrayAccess;
 use JsonSerializable;
+use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
 
 /**
@@ -95,5 +96,14 @@ class Payload implements JsonSerializable, ArrayAccess
     public function __set(string $key, mixed $value): void
     {
         $this->offsetSet($key, $value);
+    }
+
+    /**
+     * @param array<string|int, mixed> $payload
+     * @return $this
+     */
+    public static function from(array $payload): static
+    {
+        return new static($payload); // @phpstan-ignore-line
     }
 }

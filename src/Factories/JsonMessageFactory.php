@@ -4,26 +4,29 @@ namespace Micromus\KafkaBusMessages\Factories;
 
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
+use Micromus\KafkaBusMessages\JsonMessage;
 
 /**
- * @template TMessage
+ * @template TMessage of JsonMessage
  */
-abstract class MessageFactory implements MessageFactoryInterface
+readonly class JsonMessageFactory implements MessageFactoryInterface
 {
+    /**
+     * @param class-string<TMessage> $messageClass
+     */
+    public function __construct(
+        private string $messageClass,
+    ) {
+    }
+
     /**
      * @return TMessage
      */
     public function fromKafka(ConsumerMessageInterface $message): mixed
     {
-        /** @var array<string, mixed> $data */
+        /** @var array<string|int, mixed> $data */
         $data = json_decode($message->payload(), true);
 
-        return $this->make($data);
+        return ($this->messageClass)::from($data);
     }
-
-    /**
-     * @param array<string, mixed> $payload
-     * @return TMessage
-     */
-    abstract protected function make(array $payload): mixed;
 }

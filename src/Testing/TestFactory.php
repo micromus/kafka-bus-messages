@@ -97,7 +97,7 @@ abstract class TestFactory
         $clone = clone $this;
         $clone->$field = $value;
 
-        return $clone;
+        return $clone; // @phpstan-ignore-line
     }
 
     /**

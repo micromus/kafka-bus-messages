@@ -1,10 +1,18 @@
 <?php
 
+namespace Micromus\KafkaBusMessages\Tests;
+
 use Micromus\KafkaBusMessages\JsonMessage;
+use Testo\Assert;
+use Testo\Test;
 
-it('convert payload for kafka', function () {
-    $message = new JsonMessage(['foo' => 'bar']);
+class JsonMessageTest
+{
+    #[Test]
+    public function convert_payload_for_kafka(): void
+    {
+        $message = new JsonMessage(['foo' => 'bar']);
 
-    expect($message->toPayload())
-        ->toBe('{"foo":"bar"}');
-});
+        Assert::equals($message->toPayload(), '{"foo":"bar"}');
+    }
+}

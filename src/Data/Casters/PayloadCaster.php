@@ -34,7 +34,7 @@ class PayloadCaster implements CasterInterface
 
         Assert::isArray($value, "Поле $attributeKey должно быть массивом");
 
-        return new $this->payloadClass($value);
+        return ($this->payloadClass)::from($value);
     }
 
     public function rollback(mixed $value, string $attributeKey): mixed

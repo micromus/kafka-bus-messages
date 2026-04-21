@@ -1,24 +1,34 @@
 <?php
 
+namespace Micromus\KafkaBusMessages\Tests\Data;
+
 use Micromus\KafkaBusMessages\Data\Payload;
+use Testo\Assert;
+use Testo\Test;
 
-it('get attribute', function () {
-    $payload = new Payload(['test' => 'foo-bar']);
+class PayloadTest
+{
+    #[Test]
+    public function get_attribute(): void
+    {
+        $payload = new Payload(['test' => 'foo-bar']);
 
-    expect($payload->test)
-        ->toBe('foo-bar');
-});
+        Assert::equals($payload->test, 'foo-bar'); // @phpstan-ignore-line
+    }
 
-it('get attribute as array', function () {
-    $payload = new Payload(['test' => 'foo-bar']);
+    #[Test]
+    public function get_attribute_as_array(): void
+    {
+        $payload = new Payload(['test' => 'foo-bar']);
 
-    expect($payload['test'])
-        ->toBe('foo-bar');
-});
+        Assert::equals($payload['test'], 'foo-bar');
+    }
 
-it('get all attributes', function () {
-    $payload = new Payload(['test' => 'foo-bar']);
+    #[Test]
+    public function get_all_attributes(): void
+    {
+        $payload = new Payload(['test' => 'foo-bar']);
 
-    expect($payload->jsonSerialize())
-        ->toBe(['test' => 'foo-bar']);
-});
+        Assert::equals($payload->jsonSerialize(), ['test' => 'foo-bar']);
+    }
+}
