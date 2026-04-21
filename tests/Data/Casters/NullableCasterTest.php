@@ -1,15 +1,24 @@
 <?php
 
 
+namespace Micromus\KafkaBusMessages\Tests\Data\Casters;
+
 use Micromus\KafkaBusMessages\Data\Casters\IntegerCaster;
 use Micromus\KafkaBusMessages\Data\Casters\NullableCaster;
+use Testo\Assert;
+use Testo\Data\DataProvider;
+use Testo\Data\DataSet;
+use Testo\Test;
 
-test('can cast value', function (mixed $expectedValue) {
-    $caster = new NullableCaster(new IntegerCaster());
+class NullableCasterTest
+{
+    #[Test]
+    #[DataSet([null], 'value is null')]
+    #[DataSet([202410212239], 'value is not null')]
+    public function can_cast_value(int|null $expectedValue)
+    {
+        $caster = new NullableCaster(new IntegerCaster());
 
-    expect($caster->cast($expectedValue, 'test'))
-        ->toBe($expectedValue);
-})->with([
-    'value is null' => [null],
-    'value is not null' => [202410212239],
-]);
+        Assert::equals($caster->cast($expectedValue, 'test'), $expectedValue);
+    }
+}

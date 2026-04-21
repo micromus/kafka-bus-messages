@@ -1,50 +1,61 @@
 <?php
 
+namespace Micromus\KafkaBusMessages\Tests;
+
 use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBusMessages\DomainEventEnum;
-use Micromus\KafkaBusMessages\Workbench\ProductDomainMessageFactory;
+use Micromus\KafkaBusMessages\Factories\DomainMessageFactory;
+use Micromus\KafkaBusMessages\Workbench\ProductPayload;
 use RdKafka\Message;
-use function PHPUnit\Framework\assertCount;
-use function PHPUnit\Framework\assertEquals;
+use Testo\Assert;
+use Testo\Test;
 
-it('create domain message from kafka', function () {
-    $raw = [
-        'event' => DomainEventEnum::Create->value,
-        'attributes' => [
-            'id' => 202410192253,
-            'name' => 'Тестовый товар',
-            'category' => [
-                'id' => 202410192254,
-                'name' => 'Тестовая категория',
-            ],
+class ProductDomainMessageTest
+{
+    #[Test]
+    public function create_domain_message_from_kafka(): void
+    {
+        $raw = [
+            'event' => DomainEventEnum::Create->value,
             'attributes' => [
-                [
-                    'id' => 202410192246,
-                    'name' => 'Цвет',
-                    'value' => 'Белый',
+                'id' => 202410192253,
+                'name' => 'Тестовый товар',
+                'category' => [
+                    'id' => 202410192254,
+                    'name' => 'Тестовая категория',
+                ],
+                'attributes' => [
+                    [
+                        'id' => 202410192246,
+                        'name' => 'Цвет',
+                        'value' => 'Белый',
+                    ],
                 ],
             ],
-        ],
-        'dirty' => ['test'],
-    ];
+            'dirty' => ['test'],
+        ];
 
-    $message = new Message();
-    $message->payload = (string) json_encode($raw);
+        $message = new Message();
+        $message->payload = (string)json_encode($raw);
 
-    $productDomainMessage = (new ProductDomainMessageFactory())
-        ->fromKafka(new ConsumerMessage($message));
+        $productDomainMessage = (new DomainMessageFactory(ProductPayload::class))
+            ->fromKafka(new ConsumerMessage($message));
 
-    assertEquals(DomainEventEnum::Create, $productDomainMessage->event);
-    assertEquals(['test'], $productDomainMessage->dirty);
+        Assert::equals($productDomainMessage->event, DomainEventEnum::Create);
+        Assert::equals($productDomainMessage->dirty, ['test']);
 
-    assertEquals(202410192253, $productDomainMessage->attributes->id);
-    assertEquals('Тестовый товар', $productDomainMessage->attributes->name);
+        Assert::equals($productDomainMessage->attributes->id, 202410192253);
+        Assert::equals($productDomainMessage->attributes->name, 'Тестовый товар');
 
-    assertEquals(202410192254, $productDomainMessage->attributes->category->id);
-    assertEquals('Тестовая категория', $productDomainMessage->attributes->category->name);
+        Assert::equals($productDomainMessage->attributes->category->id, 202410192254);
+        Assert::equals($productDomainMessage->attributes->category->name, 'Тестовая категория');
 
-    assertCount(1, $productDomainMessage->attributes->attributes);
-    assertEquals(202410192246, $productDomainMessage->attributes->attributes[0]->id);
-    assertEquals('Цвет', $productDomainMessage->attributes->attributes[0]->name);
-    assertEquals('Белый', $productDomainMessage->attributes->attributes[0]->value);
-});
+        Assert::array($productDomainMessage->attributes->attributes)->hasCount(1);
+
+        $attribute = $productDomainMessage->attributes->attributes[0];
+
+        Assert::equals($attribute->id, 202410192246);
+        Assert::equals($attribute->name, 'Цвет');
+        Assert::equals($attribute->value, 'Белый');
+    }
+}

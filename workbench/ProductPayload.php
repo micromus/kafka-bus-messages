@@ -15,8 +15,13 @@ use Micromus\KafkaBusMessages\Workbench\Data\CategoryPayload;
  * @property CategoryPayload $category
  * @property AttributePayload[] $attributes
  */
-final class ProductAttributes extends Payload implements AttributesInterface
+final class ProductPayload extends Payload implements AttributesInterface
 {
+    public function getKey(): ?string
+    {
+        return (string) $this->id;
+    }
+
     protected function definitionCasters(): array
     {
         return [

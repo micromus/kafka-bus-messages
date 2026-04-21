@@ -9,7 +9,7 @@ use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 /**
  * @template T of AttributesInterface
  */
-abstract readonly class DomainMessage implements HasKey, ProducerMessageInterface
+final readonly class DomainMessage implements HasKey, ProducerMessageInterface
 {
     /**
      * @param T $attributes
@@ -20,6 +20,11 @@ abstract readonly class DomainMessage implements HasKey, ProducerMessageInterfac
         public DomainEventEnum $event,
         public array $dirty = []
     ) {
+    }
+
+    public function getKey(): ?string
+    {
+        return $this->attributes->getKey();
     }
 
     public function toPayload(): string

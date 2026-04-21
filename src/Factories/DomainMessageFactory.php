@@ -2,41 +2,45 @@
 
 namespace Micromus\KafkaBusMessages\Factories;
 
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\DomainMessage;
+use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 
 /**
- * @template TMessage of DomainMessage
- *
- * @extends MessageFactory<TMessage>
+ * @template TAttributes of AttributesInterface
  */
-abstract class DomainMessageFactory extends MessageFactory
+readonly class DomainMessageFactory implements MessageFactoryInterface
 {
     /**
-     * @param array{
-     *     event: string|null,
-     *     attributes: array<string, mixed>|null,
-     *     dirty: string[]|null
-     * } $payload
-     * @return TMessage
+     * @param class-string<TAttributes> $attributesClass
      */
-    protected function make(array $payload): DomainMessage
-    {
-        $event = DomainEventEnum::tryFrom($payload['event'] ?? 'create')
-            ?: DomainEventEnum::Create;
-
-        $attributes = $payload['attributes'] ?? [];
-
-        $dirty = $payload['dirty'] ?? [];
-
-        return $this->makeDomainMessage($event, $attributes, $dirty);
+    public function __construct(
+        private string $attributesClass,
+    ) {
     }
 
     /**
-     * @param DomainEventEnum $event
-     * @param array<string, mixed> $attributes
-     * @param string[] $dirty
-     * @return TMessage
+     * @param ConsumerMessageInterface $message
+     * @return DomainMessage<TAttributes>
      */
-    abstract protected function makeDomainMessage(DomainEventEnum $event, array $attributes, array $dirty): DomainMessage;
+    public function fromKafka(ConsumerMessageInterface $message): mixed
+    {
+        /** @var array{
+         *      event: string|null,
+         *      attributes: array<string|int, mixed>|null,
+         *      dirty: string[]|null
+         * } $data */
+        $data = json_decode($message->payload(), true);
+
+        $event = DomainEventEnum::tryFrom($data['event'] ?? 'create')
+            ?: DomainEventEnum::Create;
+
+        $attributes = $data['attributes'] ?? [];
+
+        $dirty = $data['dirty'] ?? [];
+
+        return new DomainMessage(($this->attributesClass)::from($attributes), $event, $dirty);
+    }
 }

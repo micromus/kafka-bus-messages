@@ -3,7 +3,6 @@
 namespace Micromus\KafkaBusMessages\Testing;
 
 use Micromus\KafkaBusMessages\DomainEventEnum;
-use Micromus\KafkaBusMessages\DomainMessage;
 use RdKafka\Message;
 
 abstract class DomainMessageTestFactory extends TestFactory
