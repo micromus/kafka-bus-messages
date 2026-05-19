@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC4 - 2026-05-19
+
+### What's Changed
+
+* build(deps): bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 by @dependabot[bot] in https://github.com/micromus/kafka-bus-messages/pull/14
+* feat: Добавление документации к пакету by @popkovkirill in https://github.com/micromus/kafka-bus-messages/pull/15
+
+**Full Changelog**: https://github.com/micromus/kafka-bus-messages/compare/v1.0.0-RC3...v1.0.0-RC4
+
 ## v1.0.0-RC3 - 2026-04-21
 
 ### What's Changed
