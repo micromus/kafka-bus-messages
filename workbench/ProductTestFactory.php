@@ -6,8 +6,13 @@ use Micromus\KafkaBusMessages\Testing\DomainMessageTestFactory;
 use Micromus\KafkaBusMessages\Workbench\Data\AttributePayloadTestFactory;
 use Micromus\KafkaBusMessages\Workbench\Data\CategoryPayloadTestFactory;
 
-final class ProductDomainMessageTestFactory extends DomainMessageTestFactory
+/**
+ * @extends DomainMessageTestFactory<ProductPayload>
+ */
+final class ProductTestFactory extends DomainMessageTestFactory
 {
+    protected string $attributesClass = ProductPayload::class;
+
     public function definition(): array
     {
         return [

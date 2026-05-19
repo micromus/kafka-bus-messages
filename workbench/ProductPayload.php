@@ -29,4 +29,9 @@ final class ProductPayload extends Payload implements AttributesInterface
             'attributes' => new CollectionCaster(new PayloadCaster(AttributePayload::class)),
         ];
     }
+
+    public static function factory(): ProductTestFactory
+    {
+        return ProductTestFactory::new();
+    }
 }

@@ -2,9 +2,13 @@
 
 namespace Micromus\KafkaBusMessages\Workbench\Data;
 
+use Micromus\KafkaBusMessages\Testing\PayloadTestFactory;
 use Micromus\KafkaBusMessages\Testing\TestFactory;
 
-final class CategoryPayloadTestFactory extends TestFactory
+/**
+ * @extends PayloadTestFactory<CategoryPayload>
+ */
+final class CategoryPayloadTestFactory extends PayloadTestFactory
 {
     public function definition(): array
     {

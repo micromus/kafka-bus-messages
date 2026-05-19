@@ -5,21 +5,261 @@
 [![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/php-code-style.yml?branch=1.x&label=code-style&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Acode-style+branch%3A1.x)
 [![GitHub PHPStan](https://img.shields.io/github/actions/workflow/status/micromus/kafka-bus/phpstan.yml?branch=1.x&label=phpstan&style=flat-square)](https://github.com/micromus/kafka-bus/actions?query=workflow%3Aphpstan+branch%3A1.x)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+A PHP library for structuring, serializing, and deserializing Kafka messages. It provides typed message payloads with automatic casting, domain event messages, and factory helpers for both production and testing.
 
 ## Installation
-
-You can install the package via composer:
 
 ```bash
 composer require micromus/kafka-bus-messages
 ```
 
+## Core Concepts
+
+- **`Payload`** — a flexible key-value container that supports typed attribute casting (dates, integers, floats, nested payloads, collections).
+- **`JsonMessage`** — a `Payload` that serializes itself directly to a JSON Kafka message.
+- **`DomainMessage`** — a structured message that wraps an attributes object with a domain event type (`create`, `update`, `delete`) and a list of dirty (changed) fields.
+- **Casters** — classes that convert raw values on read (`cast`) and convert them back for serialization (`rollback`).
+---
+
 ## Usage
 
-```php
+### 1. Defining a Payload
 
+Extend `Payload` and define casters in `definitionCasters()` to type your fields automatically.
+
+```php
+use Micromus\KafkaBusMessages\Data\Payload;
+use Micromus\KafkaBusMessages\Data\Casters\PayloadCaster;
+use Micromus\KafkaBusMessages\Data\Casters\CollectionCaster;
+use Micromus\KafkaBusMessages\Data\Casters\IntegerCaster;
+ 
+/**
+ * @property int            $id
+ * @property string         $name
+ * @property CategoryPayload    $category
+ * @property AttributePayload[] $attributes
+ */
+class ProductPayload extends Payload implements AttributesInterface
+{
+    public function getKey(): ?string
+    {
+        return (string) $this->id;
+    }
+ 
+    protected function definitionCasters(): array
+    {
+        return [
+            'id'         => new IntegerCaster(),
+            'category'   => new PayloadCaster(CategoryPayload::class),
+            'attributes' => new CollectionCaster(new PayloadCaster(AttributePayload::class)),
+        ];
+    }
+}
+ 
+// Create from a raw array (e.g. decoded JSON)
+$product = ProductPayload::from([
+    'id'   => '42',
+    'name' => 'Laptop',
+    'category' => ['id' => 1, 'name' => 'Electronics'],
+    'attributes' => [
+        ['id' => 10, 'name' => 'Color', 'value' => 'Silver'],
+    ],
+]);
+ 
+echo $product->id;               // int(42)
+echo $product->category->name;   // string("Electronics")
+echo $product->attributes[0]->value; // string("Silver")
 ```
+ 
+---
+
+### 2. Available Casters
+
+| Caster | Description |
+|---|---|
+| `IntegerCaster` | Casts value to `int` |
+| `FloatCaster` | Casts value to `float` |
+| `DateTimeCaster` | Parses/formats `DateTimeInterface` with a configurable format |
+| `PayloadCaster` | Hydrates a nested `Payload` subclass from an array |
+| `CollectionCaster` | Applies another caster to each item in an array |
+| `NullableCaster` | Wraps any caster to allow `null` values |
+
+```php
+use Micromus\KafkaBusMessages\Data\Casters\DateTimeCaster;
+use Micromus\KafkaBusMessages\Data\Casters\NullableCaster;
+use Micromus\KafkaBusMessages\Data\Casters\FloatCaster;
+ 
+protected function definitionCasters(): array
+{
+    return [
+        'published_at' => new DateTimeCaster('Y-m-d\TH:i:s.uP'), // default format
+        'deleted_at'   => new NullableCaster(new DateTimeCaster()),
+        'price'        => new FloatCaster(),
+    ];
+}
+```
+ 
+---
+
+### 3. Sending a JSON Message
+
+`JsonMessage` extends `Payload` and implements `ProducerMessageInterface`, so it can be published directly to Kafka.
+
+```php
+use Micromus\KafkaBusMessages\JsonMessage;
+ 
+$message = new JsonMessage([
+    'order_id' => 123,
+    'status'   => 'shipped',
+]);
+ 
+// Produces: {"order_id":123,"status":"shipped"}
+$message->toPayload();
+```
+ 
+---
+
+### 4. Sending a Domain Message
+
+`DomainMessage` wraps an attributes object with a domain event type and a list of changed fields.
+
+```php
+use Micromus\KafkaBusMessages\DomainMessage;
+use Micromus\KafkaBusMessages\DomainEventEnum;
+ 
+$attributes = ProductPayload::from([
+    'id'   => 42,
+    'name' => 'Laptop Pro',
+    'category'   => ['id' => 1, 'name' => 'Electronics'],
+    'attributes' => [],
+]);
+ 
+// create / update / delete
+$message = new DomainMessage(
+    attributes: $attributes,
+    event: DomainEventEnum::Update,
+    dirty: ['name'],
+);
+ 
+// Produces JSON:
+// {
+//   "event": "update",
+//   "attributes": { "id": 42, "name": "Laptop Pro", ... },
+//   "dirty": ["name"]
+// }
+$message->toPayload();
+ 
+// The Kafka partition key comes from getKey() on the attributes object
+$message->getKey(); // "42"
+```
+ 
+---
+
+### 5. Consuming a Domain Message
+
+Use `DomainMessageFactory` to deserialize an incoming Kafka message into a typed `DomainMessage`.
+
+```php
+use Micromus\KafkaBusMessages\Factories\DomainMessageFactory;
+ 
+$factory = new DomainMessageFactory(ProductPayload::class);
+ 
+// $consumerMessage implements ConsumerMessageInterface
+$domainMessage = $factory->fromKafka($consumerMessage);
+ 
+echo $domainMessage->event->value;          // "update"
+echo $domainMessage->attributes->name;      // "Laptop Pro"
+print_r($domainMessage->dirty);             // ["name"]
+```
+
+For plain JSON messages, use `JsonMessageFactory` instead:
+
+```php
+use Micromus\KafkaBusMessages\Factories\JsonMessageFactory;
+ 
+$factory  = new JsonMessageFactory(MyJsonMessage::class);
+$message  = $factory->fromKafka($consumerMessage);
+```
+ 
+---
+
+### 6. Testing Helpers
+
+The library ships with factory base classes to generate realistic test data via [Faker](https://github.com/FakerPHP/Faker).
+
+**Define a test factory:**
+
+```php
+use Micromus\KafkaBusMessages\Testing\DomainMessageTestFactory;
+ 
+/**
+ * @extends DomainMessageTestFactory<ProductPayload>
+ */
+final class ProductTestFactory extends DomainMessageTestFactory
+{
+    protected string $attributesClass = ProductPayload::class;
+ 
+    public function definition(): array
+    {
+        return [
+            'id'         => $this->faker->numberBetween(1, 9999),
+            'name'       => $this->faker->sentence(),
+            'category'   => CategoryPayloadTestFactory::new()->makeArray(),
+            'attributes' => [
+                AttributePayloadTestFactory::new()->makeArray(),
+            ],
+        ];
+    }
+}
+```
+
+**Use it in tests:**
+
+```php
+// Build a typed DomainMessage with default fake data
+$message = ProductTestFactory::new()->message();
+ 
+// Override specific fields
+$message = ProductTestFactory::new()
+    ->withState(['name' => 'Custom Name'])
+    ->withEvent(DomainEventEnum::Delete)
+    ->withDirty(['name', 'category'])
+    ->message();
+ 
+// Get just the attributes payload
+$product = ProductTestFactory::new()->payload(['id' => 1]);
+ 
+// Build a raw RdKafka\Message for lower-level consumer tests
+$rdKafkaMessage = ProductTestFactory::new()->make();
+ 
+// Build just the raw array
+$array = ProductTestFactory::new()->makeArray();
+```
+
+For payload-only factories, extend `PayloadTestFactory`:
+
+```php
+use Micromus\KafkaBusMessages\Testing\PayloadTestFactory;
+ 
+/**
+ * @extends PayloadTestFactory<CategoryPayload>
+ */
+final class CategoryPayloadTestFactory extends PayloadTestFactory
+{
+    protected string $payloadClass = CategoryPayload::class;
+ 
+    public function definition(): array
+    {
+        return [
+            'id'   => $this->faker->numberBetween(1, 9999),
+            'name' => $this->faker->word(),
+        ];
+    }
+}
+ 
+$category = CategoryPayloadTestFactory::new()->payload();
+```
+
 
 ## Testing
 

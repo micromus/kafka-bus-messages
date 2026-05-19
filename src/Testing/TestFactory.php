@@ -19,9 +19,8 @@ abstract class TestFactory
 
     final public function __construct(
         protected Generator $faker,
-        TopicRegistry $topicRegistry,
     ) {
-        $this->messageFactory = new MessageFactory($topicRegistry);
+        $this->messageFactory = new MessageFactory();
     }
 
     /**
@@ -30,8 +29,8 @@ abstract class TestFactory
     abstract public function definition(): array;
 
     /**
-     * @param array<string, mixed> $extra
-     * @return array<string, mixed>
+     * @param array<string|int, mixed> $extra
+     * @return array<string|int, mixed>
      */
     public function makeArray(array $extra = []): array
     {
@@ -39,7 +38,7 @@ abstract class TestFactory
     }
 
     /**
-     * @param array<string, mixed> $extra
+     * @param array<string|int, mixed> $extra
      * @return Message
      *
      * @throws \JsonException
@@ -103,8 +102,8 @@ abstract class TestFactory
     /**
      * @return static
      */
-    public static function new(TopicRegistry $topicRegistry = new TopicRegistry()): self
+    public static function new(): self
     {
-        return new static(Factory::create('ru_RU'), $topicRegistry);
+        return new static(Factory::create('ru_RU'));
     }
 }
