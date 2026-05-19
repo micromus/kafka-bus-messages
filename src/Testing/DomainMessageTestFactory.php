@@ -3,11 +3,21 @@
 namespace Micromus\KafkaBusMessages\Testing;
 
 use Micromus\KafkaBusMessages\DomainEventEnum;
+use Micromus\KafkaBusMessages\DomainMessage;
+use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 use RdKafka\Message;
 
+/**
+ * @template TAttribute of AttributesInterface
+ */
 abstract class DomainMessageTestFactory extends TestFactory
 {
     protected DomainEventEnum $event = DomainEventEnum::Create;
+
+    /**
+     * @var class-string<TAttribute>
+     */
+    protected string $attributesClass;
 
     /**
      * @var string[]
@@ -15,10 +25,10 @@ abstract class DomainMessageTestFactory extends TestFactory
     protected array $dirty = [];
 
     /**
-     * @param array<string, mixed> $extra
+     * @param array<string|int, mixed> $extra
      * @return array{
      *     event: string,
-     *     attributes: array<string, mixed>,
+     *     attributes: array<string|int, mixed>,
      *     dirty: string[]
      * }
      */
@@ -47,5 +57,27 @@ abstract class DomainMessageTestFactory extends TestFactory
     public function withDirty(array $dirty): static
     {
         return $this->immutableSet('dirty', $dirty);
+    }
+
+    /**
+     * @param array<string|int, mixed> $extra
+     * @return DomainMessage<TAttribute>
+     */
+    public function message(array $extra = []): DomainMessage
+    {
+        return new DomainMessage(
+            $this->payload($extra),
+            $this->event,
+            $this->dirty
+        );
+    }
+
+    /**
+     * @param array<string|int, mixed> $extra
+     * @return TAttribute
+     */
+    public function payload(array $extra = []): AttributesInterface
+    {
+        return ($this->attributesClass)::from($this->makeArray($extra)['attributes']);
     }
 }

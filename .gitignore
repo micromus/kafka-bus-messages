@@ -1,4 +1,6 @@
 .idea
+.junie
+
 .phpunit.cache
 build
 composer.lock
