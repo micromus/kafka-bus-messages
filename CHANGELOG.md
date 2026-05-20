@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC5 - 2026-05-20
+
+### What's Changed
+
+* fix: Исправлена ошибка обновления Changelog by @popkovkirill in https://github.com/micromus/kafka-bus-messages/pull/16
+
+**Full Changelog**: https://github.com/micromus/kafka-bus-messages/compare/v1.0.0-RC4...v1.0.0-RC5
+
 ## v0.2.0 - 2024-12-12
 
 **Full Changelog**: https://github.com/micromus/kafka-bus-messages/compare/v0.1.2...v0.2.0
