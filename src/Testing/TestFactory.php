@@ -5,7 +5,6 @@ namespace Micromus\KafkaBusMessages\Testing;
 use Faker\Factory;
 use Faker\Generator;
 use Micromus\KafkaBus\Testing\Consumers\MessageFactory;
-use Micromus\KafkaBus\Topics\TopicRegistry;
 use RdKafka\Message;
 
 abstract class TestFactory
@@ -29,8 +28,8 @@ abstract class TestFactory
     abstract public function definition(): array;
 
     /**
-     * @param array<string|int, mixed> $extra
-     * @return array<string|int, mixed>
+     * @param array<string, mixed> $extra
+     * @return array<string, mixed>
      */
     public function makeArray(array $extra = []): array
     {
@@ -38,7 +37,7 @@ abstract class TestFactory
     }
 
     /**
-     * @param array<string|int, mixed> $extra
+     * @param array<string, mixed> $extra
      * @return Message
      *
      * @throws \JsonException

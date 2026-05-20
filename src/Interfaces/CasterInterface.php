@@ -1,6 +1,6 @@
 <?php
 
-namespace Micromus\KafkaBusMessages\Interfaces\Casters;
+namespace Micromus\KafkaBusMessages\Interfaces;
 
 interface CasterInterface
 {

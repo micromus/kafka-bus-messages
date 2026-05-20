@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBusMessages\Data\Casters;
 
-use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
+use Micromus\KafkaBusMessages\Interfaces\CasterInterface;
 use Webmozart\Assert\Assert;
 
 class CollectionCaster implements CasterInterface

@@ -4,35 +4,53 @@ namespace Micromus\KafkaBusMessages;
 
 use Micromus\KafkaBus\Interfaces\Producers\Messages\HasKey;
 use Micromus\KafkaBus\Interfaces\Producers\Messages\ProducerMessageInterface;
-use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
+use Micromus\KafkaBusMessages\Data\Payload;
 
-/**
- * @template T of AttributesInterface
- */
-final readonly class DomainMessage implements HasKey, ProducerMessageInterface
+abstract class DomainMessage extends Payload implements HasKey, ProducerMessageInterface
 {
     /**
-     * @param T $attributes
-     * @param string[] $dirty
+     * @param array<string, mixed> $attributes
+     * @param DomainEventEnum $event
+     * @param list<string> $dirty
      */
     public function __construct(
-        public AttributesInterface $attributes,
-        public DomainEventEnum $event,
-        public array $dirty = []
+        array $attributes,
+        private readonly DomainEventEnum $event = DomainEventEnum::Create,
+        private readonly array $dirty = []
     ) {
+        parent::__construct($attributes);
     }
 
-    public function getKey(): ?string
+    public function getEvent(): DomainEventEnum
     {
-        return $this->attributes->getKey();
+        return $this->event;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getDirty(): array
+    {
+        return $this->dirty;
     }
 
     public function toPayload(): string
     {
         return (string) json_encode([
             'event' => $this->event->value,
-            'attributes' => $this->attributes->jsonSerialize(),
+            'attributes' => $this->jsonSerialize(),
             'dirty' => $this->dirty,
         ]);
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     * @param DomainEventEnum $event
+     * @param list<string> $dirty
+     * @return static
+     */
+    public static function create(array $attributes, DomainEventEnum $event = DomainEventEnum::Create, array $dirty = []): static
+    {
+        return new static($attributes, $event, $dirty); // @phpstan-ignore-line
     }
 }

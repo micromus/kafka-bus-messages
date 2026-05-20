@@ -4,8 +4,7 @@ namespace Micromus\KafkaBusMessages\Workbench;
 
 use Micromus\KafkaBusMessages\Data\Casters\CollectionCaster;
 use Micromus\KafkaBusMessages\Data\Casters\PayloadCaster;
-use Micromus\KafkaBusMessages\Data\Payload;
-use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
+use Micromus\KafkaBusMessages\DomainMessage;
 use Micromus\KafkaBusMessages\Workbench\Data\AttributePayload;
 use Micromus\KafkaBusMessages\Workbench\Data\CategoryPayload;
 
@@ -15,7 +14,7 @@ use Micromus\KafkaBusMessages\Workbench\Data\CategoryPayload;
  * @property CategoryPayload $category
  * @property AttributePayload[] $attributes
  */
-final class ProductPayload extends Payload implements AttributesInterface
+final class ProductMessage extends DomainMessage
 {
     public function getKey(): ?string
     {
@@ -30,8 +29,8 @@ final class ProductPayload extends Payload implements AttributesInterface
         ];
     }
 
-    public static function factory(): ProductTestFactory
+    public static function factory(): ProductMessageTestFactory
     {
-        return ProductTestFactory::new();
+        return ProductMessageTestFactory::new();
     }
 }
