@@ -2,7 +2,7 @@
 
 namespace Micromus\KafkaBusMessages\Data\Casters;
 
-use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
+use Micromus\KafkaBusMessages\Interfaces\CasterInterface;
 
 class IntegerCaster implements CasterInterface
 {

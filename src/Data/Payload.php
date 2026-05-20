@@ -4,8 +4,7 @@ namespace Micromus\KafkaBusMessages\Data;
 
 use ArrayAccess;
 use JsonSerializable;
-use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
-use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
+use Micromus\KafkaBusMessages\Interfaces\CasterInterface;
 
 /**
  * @implements ArrayAccess<string, mixed>

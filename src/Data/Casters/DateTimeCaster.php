@@ -6,8 +6,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Micromus\KafkaBusMessages\Interfaces\Casters\CasterInterface;
-use Webmozart\Assert\Assert;
+use Micromus\KafkaBusMessages\Interfaces\CasterInterface;
 
 class DateTimeCaster implements CasterInterface
 {

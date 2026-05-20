@@ -6,31 +6,30 @@ use Micromus\KafkaBus\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use Micromus\KafkaBus\Interfaces\Consumers\Messages\MessageFactoryInterface;
 use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\DomainMessage;
-use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
 
 /**
- * @template TAttributes of AttributesInterface
+ * @template TMessage of DomainMessage
  */
 readonly class DomainMessageFactory implements MessageFactoryInterface
 {
     /**
-     * @param class-string<TAttributes> $attributesClass
+     * @param class-string<TMessage> $messageClass
      */
     public function __construct(
-        private string $attributesClass,
+        private string $messageClass,
     ) {
     }
 
     /**
      * @param ConsumerMessageInterface $message
-     * @return DomainMessage<TAttributes>
+     * @return TMessage
      */
     public function fromKafka(ConsumerMessageInterface $message): mixed
     {
         /** @var array{
          *      event: string|null,
-         *      attributes: array<string|int, mixed>|null,
-         *      dirty: string[]|null
+         *      attributes: array<string, mixed>|null,
+         *      dirty: list<string>|null
          * } $data */
         $data = json_decode($message->payload(), true);
 
@@ -41,6 +40,6 @@ readonly class DomainMessageFactory implements MessageFactoryInterface
 
         $dirty = $data['dirty'] ?? [];
 
-        return new DomainMessage(($this->attributesClass)::from($attributes), $event, $dirty);
+        return ($this->messageClass)::create($attributes, $event, $dirty);
     }
 }

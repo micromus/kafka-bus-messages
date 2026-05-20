@@ -2,33 +2,33 @@
 
 namespace Micromus\KafkaBusMessages\Testing;
 
+use Micromus\KafkaBus\Consumers\Messages\ConsumerMessage;
 use Micromus\KafkaBusMessages\DomainEventEnum;
 use Micromus\KafkaBusMessages\DomainMessage;
-use Micromus\KafkaBusMessages\Interfaces\AttributesInterface;
-use RdKafka\Message;
+use Micromus\KafkaBusMessages\Factories\DomainMessageFactory;
 
 /**
- * @template TAttribute of AttributesInterface
+ * @template TMessage of DomainMessage
  */
 abstract class DomainMessageTestFactory extends TestFactory
 {
     protected DomainEventEnum $event = DomainEventEnum::Create;
 
     /**
-     * @var class-string<TAttribute>
+     * @var class-string<TMessage>
      */
-    protected string $attributesClass;
+    protected string $messageClass;
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $dirty = [];
 
     /**
-     * @param array<string|int, mixed> $extra
+     * @param array<string, mixed> $extra
      * @return array{
      *     event: string,
-     *     attributes: array<string|int, mixed>,
+     *     attributes: array<string, mixed>,
      *     dirty: string[]
      * }
      */
@@ -51,7 +51,7 @@ abstract class DomainMessageTestFactory extends TestFactory
     }
 
     /**
-     * @param string[] $dirty
+     * @param list<string> $dirty
      * @return $this
      */
     public function withDirty(array $dirty): static
@@ -60,24 +60,14 @@ abstract class DomainMessageTestFactory extends TestFactory
     }
 
     /**
-     * @param array<string|int, mixed> $extra
-     * @return DomainMessage<TAttribute>
+     * @param array<string, mixed> $extra
+     * @return TMessage
+     *
+     * @throws \JsonException
      */
     public function message(array $extra = []): DomainMessage
     {
-        return new DomainMessage(
-            $this->payload($extra),
-            $this->event,
-            $this->dirty
-        );
-    }
-
-    /**
-     * @param array<string|int, mixed> $extra
-     * @return TAttribute
-     */
-    public function payload(array $extra = []): AttributesInterface
-    {
-        return ($this->attributesClass)::from($this->makeArray($extra)['attributes']);
+        return (new DomainMessageFactory($this->messageClass))
+            ->fromKafka(new ConsumerMessage($this->make($extra)));
     }
 }

@@ -15,7 +15,7 @@ abstract class PayloadTestFactory extends TestFactory
     protected string $payloadClass;
 
     /**
-     * @param array<string|int, mixed> $extra
+     * @param array<string, mixed> $extra
      * @return TPayload
      */
     public function payload(array $extra = []): Payload
