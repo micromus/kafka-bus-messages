@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC6 - 2026-05-20
+
+### What's Changed
+
+* refactor: Переработка доменных сообщения для работы маршутизации сообщений by @popkovkirill in https://github.com/micromus/kafka-bus-messages/pull/17
+
+**Full Changelog**: https://github.com/micromus/kafka-bus-messages/compare/v1.0.0-RC5...v1.0.0-RC6
+
 ## v1.0.0-RC5 - 2026-05-20
 
 ### What's Changed
