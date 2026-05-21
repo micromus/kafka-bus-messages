@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-kafka-bus` will be documented in this file.
 
+## v1.0.0-RC7 - 2026-05-21
+
+### What's Changed
+
+* feat: Понижение версии webmozart/assert by @popkovkirill in https://github.com/micromus/kafka-bus-messages/pull/18
+
+**Full Changelog**: https://github.com/micromus/kafka-bus-messages/compare/v1.0.0-RC6...v1.0.0-RC7
+
 ## v1.0.0-RC6 - 2026-05-20
 
 ### What's Changed
